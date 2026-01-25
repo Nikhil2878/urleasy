@@ -1,27 +1,19 @@
-import { Router } from "express";
-import {
-  postURLShortener,
-  getShortenerPage,
-  redirectToShortLink,
-  getShortenerEditPage,
-  postShortenerEditPage,
-  deleteShortCode,
-} from "../controllers/postshortener.controller.js";
-
+import {Router} from "express";
+import {postURLShortener,getShortenerPage,redirectToShortLink} from "../controllers/postshortener.controller.js";
 const router = Router();
 
-router.get("/", getShortenerPage);
+//EJS template engine
+router.get("/report",(req,res) => {
+    const student = {
+        name: "Lokesh",
+        grade: "10th",
+        favoriteSubject: "Mathematics"
+    }
+    res.render("report",{student});
+})
+router.get("/",getShortenerPage);
+//yaha pe function call karoge controller me define karoge
+router.post("/",postURLShortener);
 
-router.post("/", postURLShortener);
-
-router.get("/:shortCode", redirectToShortLink);
-
-router.route("/edit/:id").get(getShortenerEditPage).post(postShortenerEditPage);
-
-router.route("/delete/:id").post(deleteShortCode);
-
-//default export
-// export default router;
-
-// Named exports
-export const shortenerRoutes = router;
+router.get("/:shortCode",redirectToShortLink);
+export default router;
