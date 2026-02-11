@@ -1,41 +1,95 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="style.css">
-    <title>URL Shortener By Nikhil Rawat</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>URL Shortener</title>
+  <link rel="stylesheet" href="/style.css" />
 </head>
 <body>
-    <div class="container">
-        <h1>URL Shortner</h1>
-        <form action="/" method="post">
-            <div>
-                <label for="url">Enter URL : </label>
-                <input type="url" name="url" id="url" required>
-            </div>
-            <div>
-                <label for="url">Enter Shortcode : </label>
-                <input type="text" name="shortCode" id="shortCode" required>
-            </div>
-            <button type="submit">shorten</button>
-        </form>
-        <h2>Shortened URLs</h2>
-        <ul>
-       
-                    
-                <% links.map(({shortCode,url}) => { %>
-                    <% const truncatedUrl = url.length >= 30 ? `${url.slice(0,30)}...` : url %>
-                <li>
-                    <a href="/<%= shortCode%>" target="_blank">
-                        <%= host %>/<%= shortCode %>
-                    </a> - <%= truncatedUrl %>
-                </li>
-                <% })%>
-        </ul>
+
+  <%- include('./partials/header.ejs') %>
+
+  <main class="container">
+
+    <% if(user){ %>
+      <div class="alert success">
+       Welcome, <strong><%= user.name %></strong>
+      </div>
+    <% } else { %>
+      <div class="alert danger">
+        ⚠ You are not logged in
+      </div>
+    <% } %>
+
+    <div class="card">
+      <h1>URL Shortener</h1>
+      <p class="subtitle">Create short & shareable links instantly</p>
+
+      <form action="/" method="post" class="url-form">
+        <div class="input-group">
+          <label>Enter URL</label>
+          <input type="url" name="url" placeholder="https://example.com" required />
+        </div>
+
+        <div class="input-group">
+          <label>Short Code</label>
+          <input type="text" name="shortCode" placeholder="my-link" required />
+        </div>
+<% if(errors && errors.length > 0) { %> <%
+      errors.forEach((error) => { %>
+        <p style="color: red"><%- error %></p>
+      <%})%> <% } %>
+        <button type="submit">Shorten URL</button>
+      </form>
     </div>
-    <script>
-        
-    </script>
+
+    <div class="card">
+      <h2>📌 Your Shortened Links</h2>
+
+      <% if(links.length === 0){ %>
+        <p class="empty">No links created yet.</p>
+      <% } %>
+
+      <ul class="link-list">
+        <% links.map(({ shortCode, url, id }) => { 
+          const truncatedUrl = url.length > 35 ? url.slice(0,35) + '...' : url;
+        %>
+          <li class="link-item">
+            <div class="link-info">
+              <a href="/<%= shortCode %>" target="_blank" class="short-link">
+                <%= host %>/<%= shortCode %>
+              </a>
+              <span class="original-url"><%= truncatedUrl %></span>
+            </div>
+
+            <form action="/delete/<%= id %>" method="post">
+               <button class="copy-btn">
+              <a style="text-decoration: none; color: white">
+               🗙 Delete
+              </a>
+            </button>
+            </form>
+           
+            <button class="copy-btn">
+              <a href="/edit/<%= id %>" style="text-decoration: none; color: white">
+               ✎ Edit
+              </a>
+            </button>
+            <button class="copy-btn" onclick="copyLink('<%= host %>/<%= shortCode %>')">
+              📋 Copy
+            </button>
+          </li>
+        <% }) %>
+      </ul>
+    </div>
+
+  </main>
+
+  <div id="toast">Copied to clipboard!</div>
+
+  <%- include('./partials/footer.ejs') %>
+
+  <script src="/script.js"></script>
 </body>
 </html>

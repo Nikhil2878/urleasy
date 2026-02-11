@@ -1,0 +1,112 @@
+/* RESET */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", sans-serif;
+}
+
+/* HEADER */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+}
+
+/* CONTAINER */
+.nav-container {
+  max-width: 1100px;
+  margin: auto;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* LOGO */
+.logo a {
+  text-decoration: none;
+  font-size: 22px;
+  font-weight: 700;
+  color: #fff;
+}
+
+/* NAVBAR */
+.navbar {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+}
+
+.navbar a {
+  text-decoration: none;
+  color: #f1f1f1;
+  font-size: 15px;
+  transition: 0.3s;
+}
+
+.navbar a:hover {
+  color: #ffd6ff;
+}
+
+/* BUTTONS */
+.btn {
+  padding: 8px 16px;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #4f46e5 !important;
+  font-weight: 600;
+}
+
+.btn:hover {
+  background: #f1f1f1;
+}
+
+.btn.outline {
+  background: transparent;
+  border: 2px solid #fff;
+  color: #fff !important;
+}
+
+.btn.outline:hover {
+  background: rgba(255,255,255,0.15);
+}
+
+/* MENU ICON */
+/* MENU ICON (HIDDEN ON DESKTOP) */
+.menu-icon {
+  display: none;        /* ✅ hide by default (desktop) */
+  font-size: 26px;
+  color: #fff;
+  cursor: pointer;
+}
+
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .menu-icon {
+    display: block;
+  }
+
+  .navbar {
+    position: absolute;
+    top: 65px;
+    left: 0;
+    width: 100%;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    flex-direction: column;
+    padding: 20px 0;
+    gap: 15px;
+    display: none;
+  }
+
+  .navbar.active {
+    display: flex;
+  }
+
+  .navbar a {
+    font-size: 16px;
+  }
+}

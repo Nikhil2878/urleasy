@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>URL Shortener</title>
+
+  <!-- Icons -->
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/material-design-iconic-font@2.2.0/dist/css/material-design-iconic-font.min.css"
+  />
+
+  <!-- Navbar CSS -->
+  <link rel="stylesheet" href="/footer.css">
+</head>
+<body>
+
+
+<footer class="footer">
+  <div class="container footer-container">
+    <div class="copyright">
+      &copy; <%= new Date().getFullYear(); %> Nikhil Rawat. All rights reserved.
+    </div>
+
+    <div class="social-links">
+      <a href="#"><i class="zmdi zmdi-facebook"></i></a>
+      <a href="#"><i class="zmdi zmdi-twitter"></i></a>
+      <a href="#"><i class="zmdi zmdi-instagram"></i></a>
+      <a href="#"><i class="zmdi zmdi-linkedin"></i></a>
+    </div>
+  </div>
+</footer>
+<script>
+  const menuToggle = document.getElementById("menuToggle");
+  const navbar = document.getElementById("navbar");
+
+  menuToggle.addEventListener("click", () => {
+    navbar.classList.toggle("active");
+  });
+</script>
+
+</body>
+</html>
+
+

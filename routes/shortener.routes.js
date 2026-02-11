@@ -1,5 +1,5 @@
 import {Router} from "express";
-import {postURLShortener,getShortenerPage,redirectToShortLink} from "../controllers/postshortener.controller.js";
+import {postURLShortener,getShortenerPage,redirectToShortLink,getShortenerEditPage,deleteShortCode} from "../controllers/postshortener.controller.js";
 const router = Router();
 
 //EJS template engine
@@ -16,4 +16,10 @@ router.get("/",getShortenerPage);
 router.post("/",postURLShortener);
 
 router.get("/:shortCode",redirectToShortLink);
+
+//for edit
+router.route("/edit/:id").get(getShortenerEditPage);
+
+//for delete
+router.route("/delete/:id").post(deleteShortCode);
 export default router;

@@ -1,13 +1,29 @@
 import crypto from "crypto";
-import { getAllShortLinks, getShortLinkByShortCode, insertShortLink } from "../services/shortener.services.js";
+import { deleteShortCodeById, findShortLinkById, getAllShortLinks, getShortLinkByShortCode, insertShortLink } from "../services/shortener.services.js";
+import { homePageSchema } from "../validators/home-validation.js";
+import {z} from "zod";
 // import {loadLinks,getLinkByShortCode, insertShortLink} from "../models/shortener.model.js";
 export const getShortenerPage = async(req,res)=>{
 try {
                 // const file = await readFile(path.join("views","index.html"));
 
                 // const links = await loadLinks();
-                const links = await getAllShortLinks();
-                return res.render("index",{links,host:req.host})
+                if(!req.user) return res.redirect("/login");
+                const links = await getAllShortLinks(req.user.id);
+
+                // let isLoggedIn = req.headers.cookie;
+                // isLoggedIn = Boolean(
+                //     isLoggedIn
+                //     ?.split(";")
+                //     ?.find((cookie) => cookie.trim().startsWith("isLoggedIn"))
+                //     ?.split("=")[1]
+                // );
+                // console.log("isLoggedIn : ",typeof isLoggedIn);
+
+                // let isLoggedIn = req.cookies?.isLoggedIn;
+        
+
+                return res.render("index",{links,host:req.host,errors: req.flash('errors')})
 } catch (error) {
     console.error(error);
     return res.status(500).send("Internal server error");
@@ -15,19 +31,37 @@ try {
 }
 export const postURLShortener = async(req,res)=>{
     try {
-        const {url,shortCode} = req.body;
+        if(!req.user) return res.redirect("/login");
+
+           const {data,error} = homePageSchema.safeParse(req.body);
+             if(error){
+                const errors = error.issues[0].message;
+                req.flash("errors",errors);
+                // console.log("error hai ",error);
+                res.redirect("/login");
+            }
+        
+
+
+        const {url,shortCode} = data;
         const finalShortCode = shortCode || crypto.randomBytes(4).toString("hex");
         // const links = await loadLinks();
         const link = await getShortLinkByShortCode(finalShortCode);
         if(link){
-            return res
-            .status(400)
-            .send("Short code already exists. Please choose another.");
+            // return res
+            // .status(400)
+            // .send("Short code already exists. Please choose another.");
+            req.flash(
+                "errors",
+                "Short code already exists. Please choose another."
+            );
+            return res.redirect("/");
+
         }
         // links[finalShortCode] = url;
         // await saveLinks(links);
         // await saveLinks({url,shortCode});
-        await insertShortLink({url,finalShortCode});
+        await insertShortLink({url,finalShortCode,userId:req.user.id});
 
             return res.redirect("/");
     } catch (error) {
@@ -52,3 +86,38 @@ export const redirectToShortLink = async(req,res)=>{
     }
 }
 
+//getShortenerEditPage
+export const getShortenerEditPage = async(req,res) => {
+    if(!req.user) return res.redirect("/login");
+    // const id = req.params;
+    const {data: id,error} = z.coerce.number().int().safeParse(req.params.id);
+    if(error) return res.redirect("/404");
+    try{
+        const shortLink = await findShortLinkById(id);
+    if(!shortLink) return res.redirect("/404");
+
+    res.render("edit-shortLink",{
+        id:shortLink.id,
+        url:shortLink.url,
+        shortCode:shortLink.shortCode,
+        errors: req.flash("errors"),
+    })
+    }catch(err){
+        console.log(err);
+        return res.status(500).send("Internal server error");
+    }
+}
+//deleteShortCode
+export const deleteShortCode = async(req,res) => {
+        const {data: id,error} = z.coerce.number().int().safeParse(req.params.id);
+    if(error) return res.redirect("/404");
+    try {
+        await deleteShortCodeById(id);
+        return res.redirect("/");
+    } catch (err) {
+      if(err.code === "ER_DUP_ENTRY"){
+        req.flash("errors","Shortcode already exists, please choose another");
+        return res.redirect(`/edit/${id}`);
+      }  
+    }
+}

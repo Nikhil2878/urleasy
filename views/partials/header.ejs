@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>URL Shortener</title>
+
+  <!-- Icons -->
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/material-design-iconic-font@2.2.0/dist/css/material-design-iconic-font.min.css"
+  />
+
+  <!-- Navbar CSS -->
+  <link rel="stylesheet" href="/navbar.css">
+</head>
+<body>
+
+<header class="header">
+  <div class="container nav-container">
+
+    <div class="logo">
+      <a href="/">URL Shortener</a>
+    </div>
+
+    <i class="zmdi zmdi-menu menu-icon" id="menuToggle" ></i>
+
+    <nav class="navbar" id="navbar">
+      <a href="/">Home</a>
+      <a href="#section2">About</a>
+      <a href="#section4">Contact</a>
+
+      <% if (!user) { %>
+        <a href="/login" class="btn">Login</a>
+        <a href="/register" class="btn outline">Register</a>
+      <% } else { %>
+        <a href="/me" class="btn">Profile</a>
+        <a href="/logout" class="btn outline">Logout</a>
+      <% } %>
+    </nav>
+
+  </div>
+</header>
+
+<script>
+  const menuToggle = document.getElementById("menuToggle");
+  const navbar = document.getElementById("navbar");
+
+  menuToggle.addEventListener("click", () => {
+    navbar.classList.toggle("active");
+  });
+</script>
+
+</body>
+</html>

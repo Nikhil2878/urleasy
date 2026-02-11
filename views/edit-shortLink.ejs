@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>URL Shortener | Nikhil Rawat</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+
+  <%- include('./partials/header.ejs') %>
+
+  <main class="container">
+
+    <% if(user){ %>
+      <div class="alert success">
+        👋 Welcome, <strong><%= user.name %></strong>
+      </div>
+    <% } else { %>
+      <div class="alert danger">
+        ⚠ You are not logged in
+      </div>
+    <% } %>
+
+    <div class="card">
+      <h1>🔗 URL Shortener</h1>
+      <p class="subtitle">Create short & shareable links instantly</p>
+
+      <form action="/" method="post" class="url-form">
+        <div class="input-group">
+          <label>Enter URL</label>
+          <input type="url" name="url" value="<%= url %>" required />
+        </div>
+
+        <div class="input-group">
+          <label>Short Code</label>
+          <input type="text" name="shortCode" value="<%= shortCode %>" required />
+        </div>
+<% if(errors && errors.length > 0) { %> <%
+      errors.forEach((error) => { %>
+        <p style="color: red"><%- error %></p>
+      <%})%> <% } %>
+        <button type="submit">Update</button>
+      </form>
+    </div>
+
+  </main>
+
+  <div id="toast">Copied to clipboard!</div>
+
+  <%- include('./partials/footer.ejs') %>
+
+</body>
+</html>
