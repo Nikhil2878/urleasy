@@ -1,33 +1,34 @@
-import {createServer} from "http";
-import express from "express";
-import router from "./routes/shortener.routes.js"
-import dotenv from "dotenv";
-import { authRoutes } from "./routes/auth.routes.js";
 import cookieParser from "cookie-parser";
-import session from "express-session";
+import express from "express"
+// displaying temporary notification messages
 import flash from "connect-flash";
-import {verifyAuthentication} from "./middlewares/verify-auth-middleware.js";
+import requestIp from "request-ip";
+import session from "express-session";
+import dotenv from "dotenv";
+import router from "./routes/shortener.routes.js";
+import { createServer } from "http";
+import { authRoutes } from "./routes/auth.routes.js";
+import { verifyAuthentication } from "./middlewares/verify-auth-middleware.js";
 
 dotenv.config();
 const app = express();
 app.use(express.static("public"));
-app.use(express.urlencoded({extended: true}));
-
-
-
+app.use(express.urlencoded({ extended: true }));
 
 app.use(express.json());
 app.use(cookieParser());
 
 //After cookieParser use this session middleware
-app.use(session({
-  secret: "my-secret",
-  resave: true,
-  saveUninitialized: false
-}))
+app.use(
+  session( {
+    secret: "my-secret",
+    resave: true,
+    saveUninitialized: false,
+  }),
+);
 app.use(flash());
 
-
+app.use(requestIp.mw());
 app.use(verifyAuthentication);
 
 app.use((req, res, next) => {
@@ -35,20 +36,15 @@ app.use((req, res, next) => {
   return next();
 });
 
-
 //Express router
 app.use(authRoutes);
 app.use(router);
 
-
 //EJS template engine for dynamic content
-app.set("view engine","ejs");
-app.set("views","./views");
+app.set("view engine", "ejs");
+app.set("views", "./views");
 
-
-
-            const PORT =  3000;
-app.listen(PORT,()=>{
-    console.log(`Server running at http://localhost:${PORT}`);
-
-})
+const PORT = 3000;
+app.listen(PORT, () => {
+  console.log(`Server running at http://localhost:${PORT}`);
+});

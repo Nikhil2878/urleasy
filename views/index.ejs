@@ -62,23 +62,29 @@
               </a>
               <span class="original-url"><%= truncatedUrl %></span>
             </div>
+            <div class="url-actions">  
+  <!-- Edit -->
+  <a href="/edit/<%= id %>" class="icon-btn edit-btn" title="Edit">
+    <i class="zmdi zmdi-edit"></i>
+  </a>
 
-            <form action="/delete/<%= id %>" method="post">
-               <button class="copy-btn">
-              <a style="text-decoration: none; color: white">
-               🗙 Delete
-              </a>
-            </button>
-            </form>
-           
-            <button class="copy-btn">
-              <a href="/edit/<%= id %>" style="text-decoration: none; color: white">
-               ✎ Edit
-              </a>
-            </button>
-            <button class="copy-btn" onclick="copyLink('<%= host %>/<%= shortCode %>')">
-              📋 Copy
-            </button>
+  <!-- Delete -->
+  <form action="/delete/<%= id %>" method="post">
+    <button class="icon-btn delete-btn" title="Delete">
+      <i class="zmdi zmdi-delete"></i>
+    </button>
+  </form>
+
+  <!-- Copy -->
+  <button 
+    class="icon-btn copy-btn" 
+    title="Copy"
+    onclick="copyLink('<%= host %>/<%= shortCode %>')"
+  >
+    <i class="zmdi zmdi-copy"></i>
+  </button>
+
+</div>
           </li>
         <% }) %>
       </ul>
@@ -88,8 +94,90 @@
 
   <div id="toast">Copied to clipboard!</div>
 
-  <%- include('./partials/footer.ejs') %>
+  
+      <%# Pagination component %>
+      <% if (totalPages > 1) { %>
+           <div class="pagination">
+             <%# Previous page link %>
+             <% if (currentPage > 1) { %>
+               <a href="?page=<%= currentPage - 1 %>" class="page-link">&laquo; Previous</a>
+             <% } else { %>
+               <span class="page-link disabled">&laquo; Previous</span>
+             <% } %>
 
+          
+
+                   <%# Page numbers %>
+          <% 
+             // Calculate the range of page numbers to display
+             let startPage = Math.max(1, currentPage - 2);
+             let endPage = Math.min(totalPages, currentPage + 2);
+
+                         // Ensure 5 pages are shown if possible
+while (endPage - startPage < 4 && startPage > 1) {
+  startPage--;
+}
+while (endPage - startPage < 4 && endPage < totalPages) {
+  endPage++;
+}
+
+           %>
+<% 
+                 // Always show first pge
+            if (startPage > 1) { %>
+               <a href="?page=1" class="page-link">1</a>
+               <% if (startPage > 2) { %>
+                 <span class="ellipsis">...</span>
+               <% } %>
+             <% } %>
+        
+               <%# Show page numbers around current page %>
+             <% for (let i = startPage; i <= endPage; i++) { %>
+               <% if (i === currentPage) { %>
+                 <span class="page-link current"><%= i %></span>
+               <% } else { %>
+                 <a href="?page=<%= i %>" class="page-link"><%= i %></a>
+               <% } %>
+             <% } %>
+ 
+                     <%# Always show last page %>
+             <% if (endPage < totalPages) { %>
+               <% if (endPage < totalPages - 1) { %>
+                 <span class="ellipsis">...</span>
+               <% } %>
+               <a href="?page=<%= totalPages %>" class="page-link"><%= totalPages %></a>
+             <% } %>
+                      
+  
+             <%# Next page link %>
+             <% if (currentPage < totalPages) { %>
+               <a href="?page=<%= currentPage + 1 %>" class="page-link">Next &raquo;</a>
+             <% } else { %>
+               <span class="page-link disabled">Next &raquo;</span>
+             <% } %>
+
+           </div>
+         <% } %>
+
+  <%- include('./partials/footer.ejs') %>
+<!-- 
+     <%# Pagination component %>
+      <% if (totalPages > 1) { %>
+           <div class="pagination">
+             <%# Previous page link %>
+             <% if (currentPage > 1) { %>
+               <a href="?page=<%= currentPage - 1 %>" class="page-link">&laquo; Previous</a>
+             <% } %>
+            <span class="page-link"><%= currentPage %></span>
+            
+      
+             <% if(currentPage < totalPages){ %>
+              <a href="?page=<%= currentPage + 1 %>" class="page-link">Next &raquo;</a>
+             <% } else{%>
+              <span class="page-link disabled">Next &raquo;</span>
+              <% } %>
+           </div>
+<% } %> -->
   <script src="/script.js"></script>
 </body>
 </html>
